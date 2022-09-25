@@ -11,6 +11,7 @@ func client(client_seq_ch chan int, client_ack_ch chan int, server_seq_ch chan i
 
 	//Send first handshake
 	server_seq_ch <- seq
+	fmt.Printf("Client sent first handshake.\n")
 
 	//Reviece second handshake
 	ack_temp := <-client_ack_ch
@@ -22,9 +23,10 @@ func client(client_seq_ch chan int, client_ack_ch chan int, server_seq_ch chan i
 			seq = seq + 1
 		}
 	}
-	fmt.Printf("Client recieved second handshake with sequence = %[2]d and acknowledgement = %[1]d", ack, seq)
+	fmt.Printf("Client recieved second handshake with sequence = %[2]d and acknowledgement = %[1]d\n", ack, seq)
 
 	//Send third handshake
+	fmt.Printf("Client sent third handshake.\n")
 	server_seq_ch <- seq
 	server_ack_ch <- ack
 }
@@ -34,11 +36,13 @@ func server(server_seq_ch chan int, server_ack_ch chan int, client_seq_ch chan i
 
 	//Recieve first handshake
 	seq := <-server_seq_ch
-	fmt.Printf("Server recieved first handshake with sequence = %[1]d and sent acknowledgement = %[2]d", seq, ack)
+	fmt.Printf("Server recieved first handshake with sequence = %[1]d and sent acknowledgement = %[2]d\n", seq, ack)
 
 	//Send second handshake
-	client_seq_ch <- seq
 	client_ack_ch <- ack
+	time.Sleep(1 * time.Second)
+	client_seq_ch <- seq
+	fmt.Printf("Server sent second handshake.\n")
 
 	//Recieve third handshake
 	seq_temp := <-server_seq_ch
@@ -48,6 +52,7 @@ func server(server_seq_ch chan int, server_ack_ch chan int, client_seq_ch chan i
 			seq = seq_temp
 			ack = ack_temp
 			ack = ack + 1
+			fmt.Printf("Server recieved third handshake. \n")
 		}
 	}
 }
