@@ -39,9 +39,6 @@ func client(client_seq_ch chan int, client_ack_ch chan int, server_seq_ch chan i
 			seq++
 			fmt.Printf("Client sent fictional data with sequence = %d.\n", seq)
 			server_seq_ch <- seq
-		} else {
-			fmt.Printf("Client recieved reorder request for sequence = %[1]d. Resending package.\n", ack_temp)
-			server_seq_ch <- ack_temp
 		}
 	}
 
@@ -82,9 +79,6 @@ func server(server_seq_ch chan int, server_ack_ch chan int, client_seq_ch chan i
 			ack++
 			fmt.Printf("Server recieved sequence = %[1]d and sent acknowledgement = %[2]d\n", seq, ack)
 			client_ack_ch <- ack
-		} else {
-			fmt.Printf("Server recieved sequence = %[1]d but expected sequence = %[2]d. Sending reorder request.\n", seq_temp, seq+1)
-			client_ack_ch <- seq + 1
 		}
 	}
 }
