@@ -10,8 +10,8 @@ func client(client_seq_ch chan int, client_ack_ch chan int, server_seq_ch chan i
 	ack := 0
 
 	//Send first handshake
-	fmt.Printf("Client sent first handshake.\n")
 	server_seq_ch <- seq
+	fmt.Printf("Client sent first handshake.\n")
 
 	//Reviece second handshake
 	ack_temp := <-client_ack_ch
@@ -36,6 +36,7 @@ func server(server_seq_ch chan int, server_ack_ch chan int, client_seq_ch chan i
 
 	//Recieve first handshake
 	seq := <-server_seq_ch
+	time.Sleep(500)
 	fmt.Printf("Server recieved first handshake with sequence = %[1]d and sent acknowledgement = %[2]d\n", seq, ack)
 
 	//Send second handshake
